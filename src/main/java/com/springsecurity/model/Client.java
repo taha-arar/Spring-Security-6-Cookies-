@@ -30,7 +30,7 @@ public class Client extends AbstractEntity {
     @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
-    @NotBlank(message = "Date of birth is mandatory")
+    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
