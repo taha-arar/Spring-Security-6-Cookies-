@@ -29,7 +29,10 @@ public class ClientBootstrap {
                 Client client = new Client();
                 client.setFirstName(faker.name().firstName());
                 client.setLastName(faker.name().lastName());
-                client.setDateOfBirth(LocalDate.of(1980 + random.nextInt(20), 1 + random.nextInt(12), 1 + random.nextInt(28)));
+                client.setDateOfBirth(LocalDate.of(
+                        1980 + random.nextInt(20),
+                        1 + random.nextInt(12),
+                        1 + random.nextInt(28)));
                 client.setGender(random.nextBoolean() ? Gender.MALE : Gender.FEMALE);
                 client.setEmail(faker.internet().emailAddress());
                 client.setPhone(String.format("%010d", random.nextInt(1_000_000_000)));
