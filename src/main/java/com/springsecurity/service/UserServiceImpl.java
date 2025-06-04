@@ -44,17 +44,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setPassword(null);
+                    return user;
+                });
     }
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll()
+                .stream()
+                .peek(user -> user.setPassword(null))
+                .toList();
     }
 
     @Override
     public Page<User> findAllPaginated(Pageable pageable) {
-        return userRepository.findAll(pageable);
+        return userRepository.findAll(pageable)
+                .map(user -> {
+                    user.setPassword(null);
+                    return user;
+                });
     }
 
 }
