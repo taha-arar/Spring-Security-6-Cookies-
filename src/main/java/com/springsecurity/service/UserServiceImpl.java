@@ -2,10 +2,14 @@ package com.springsecurity.service;
 
 import com.springsecurity.exception.UserNotFoundException;
 import com.springsecurity.model.User;
+import com.springsecurity.model.dto.UserAuthTO;
 import com.springsecurity.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +17,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+    private final AuthenticationManager authManager;
+    private final JWTService jwtService;
 
 
     @Override
@@ -66,6 +72,16 @@ public class UserServiceImpl implements UserService {
                     user.setPassword(null);
                     return user;
                 });
+    }
+
+    @Override
+    public String verify(UserAuthTO user) {
+        Authentication authentication = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+        );
+        return authentication.isAuthenticated() ?
+                jwtService.generateToken(user.getUsername()) :
+                "Invalid username or password";
     }
 
 }
