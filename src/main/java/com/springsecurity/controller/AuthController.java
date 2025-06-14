@@ -1,9 +1,12 @@
 package com.springsecurity.controller;
 
-import com.springsecurity.model.dto.UserAuthTO;
+import com.springsecurity.model.User;
+import com.springsecurity.service.CookieService;
 import com.springsecurity.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,17 +19,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final CookieService cookieService;
 
     @PostMapping("/signup")
-    public UserAuthTO register(@RequestBody UserAuthTO user) {
+    public ResponseEntity<Long> register(@RequestBody User user) {
         log.info("Registering new user: {}", user.getUsername());
-        // Logic to register a new user
-        return user;
+        Long id = userService.save(user);
+        return ResponseEntity.status(201).body(id);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserAuthTO user) {
-        log.info("User attempting to login: {}", user.getUsername());
-        return  userService.verify(user);
+    public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response) {
+        log.info("Login attempt: {}", user.getUsername());
+        String token = userService.verify(user);
+        cookieService.addJwtTokenToResponse(token, response);
+        return ResponseEntity.ok("Login successful");
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
+        cookieService.clearJwtCookie(response);
+        return ResponseEntity.ok("Logged out");
+    }
+
+
 }

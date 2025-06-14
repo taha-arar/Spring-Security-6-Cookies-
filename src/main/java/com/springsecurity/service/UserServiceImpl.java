@@ -2,7 +2,6 @@ package com.springsecurity.service;
 
 import com.springsecurity.exception.UserNotFoundException;
 import com.springsecurity.model.User;
-import com.springsecurity.model.dto.UserAuthTO;
 import com.springsecurity.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -75,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String verify(UserAuthTO user) {
+    public String verify(User user) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
         );

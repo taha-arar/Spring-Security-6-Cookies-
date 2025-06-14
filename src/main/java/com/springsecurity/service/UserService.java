@@ -1,7 +1,6 @@
 package com.springsecurity.service;
 
 import com.springsecurity.model.User;
-import com.springsecurity.model.dto.UserAuthTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +15,5 @@ public interface UserService {
     Optional<User> findById(Long id);
     List<User> findAll();
     Page<User> findAllPaginated(Pageable pageable);
-    String verify(UserAuthTO user);
+    String verify(User user);
 }
